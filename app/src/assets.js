@@ -6,4 +6,4 @@ export const IMG = {
   emptyState: null,                           // dashboard when there are no classes. null = QR icon. Or an illustration
   authBackground: null,                       // Login/Register background. null = orange gradient. Or a full-screen image
 };
-// App icon + Android icon are set in app.json (assets/icon.png, assets/adaptive-icon.png)
+// App icon + Android icon are set in app.json (assets/app-icon.png, assets/app-icon-adaptive.png)

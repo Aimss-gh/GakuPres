@@ -196,8 +196,9 @@ If the text is a function like `(n) => \`Minimum of ${n} characters\``, keep the
 | `assets/icon-dark.png` (`IMG.headerLogo`) | Orange top bar, left of GAKUPRES | square PNG, transparent (shown about 32x32) |
 | `IMG.emptyState` | Dashboard with no classes | about 480x480 PNG, transparent |
 | `IMG.authBackground` | Login + Register background | about 1080x1920 |
-| `assets/icon.png` | App icon (**only visible in a real build**, Expo Go uses its own) | 1024x1024 PNG, no transparency |
-| `assets/adaptive-icon.png` | Android icon (background color is in `app.json`) | 1024x1024 PNG, transparent, keep the picture inside the middle 66% |
+| `assets/app-icon.png` | App icon (**only visible in a real build**, Expo Go uses its own) | 1024x1024 PNG, no transparency |
+| `assets/app-icon-adaptive.png` | Android icon (background color `#ffffff` is in `app.json`) | 1024x1024 PNG, transparent, keep the picture inside the middle 66% |
+| `assets/icon.png` | Cap on the Login card (the old app icon) | 1024x1024 PNG |
 
 **A font (from Google Fonts):**
 1. `npm i @expo-google-fonts/poppins` (any font package from `@expo-google-fonts/...`)
@@ -240,7 +241,7 @@ App.js              loads fonts, screen navigation, "logged in? show the app : s
 app.json            app name, app id, icon, splash screen, permissions
 eas.json            settings for real app builds (server address goes here)
 .env.example        copy to `.env` (section 5)
-assets/             icon.png, adaptive-icon.png, icon-dark.png (header cap), icon-light.png
+assets/             app-icon.png + app-icon-adaptive.png (app icon), icon.png (Login cap), icon-dark.png (header cap), icon-light.png, adaptive-icon.png (old)
 tests/run.mjs       npm test
 PRIVACY.md          the privacy policy | TESTING.md   real-phone test checklist
 
