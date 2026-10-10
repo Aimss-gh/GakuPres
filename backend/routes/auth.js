@@ -131,7 +131,18 @@ router.patch('/me', authMiddleware, wrap(async (req, res) => {
 // The 6-digit code is emailed, kept only as a hash, works for 15 minutes and allows 5 tries.
 // ─────────────────────────────────────────
 const crypto = require('crypto');
-const { sendMail } = require('../lib/mail');
+const { sendMail: rawSendMail } = require('../lib/mail');
+const log = require('../lib/log');
+// An email that can't be sent (Brevo/Gmail said no, or is down) becomes a clear 503 for the app;
+// the real reason goes to the server log (Render > Logs).
+async function sendMail(mail) {
+  try {
+    return await rawSendMail(mail);
+  } catch (e) {
+    log.error('Email failed:', e.message);
+    throw new HttpError(503, "We couldn't send the email right now. Please try again in a few minutes.", 'MAIL_FAILED');
+  }
+}
 const CODE_MINUTES = 15;
 const CODE_TRIES = 5;
 const hashCode = (code) => crypto.createHash('sha256').update(`${process.env.JWT_SECRET}:${code}`).digest('hex');

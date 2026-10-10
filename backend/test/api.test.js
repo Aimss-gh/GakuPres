@@ -505,7 +505,7 @@ const ok = (name, cond, extra) => { assert.ok(cond, name + ' ' + JSON.stringify(
         q.on('end', () => { got = { key: q.headers['api-key'], body: JSON.parse(b) }; s2.writeHead(201, { 'content-type': 'application/json' }); s2.end('{"messageId":"x"}'); });
       }).listen(0);
       await new Promise((r) => fake.once('listening', r));
-      Object.assign(process.env, { BREVO_API_KEY: 'test-key', BREVO_API_URL: `http://127.0.0.1:${fake.address().port}`, MAIL_FROM: 'GakuPres <team@example.com>', NODE_ENV: 'production' });
+      Object.assign(process.env, { BREVO_API_KEY: 'test-key', BREVO_API_URL: `http://127.0.0.1:${fake.address().port}`, MAIL_FROM: '"GakuPres <team@example.com>"' /* with quotes, as typed into Render */, NODE_ENV: 'production' });
       delete require.cache[require.resolve('../lib/mail')];
       const { sendMail } = require('../lib/mail');
       const sent = await sendMail({ to: 'teacher@example.com', subject: 'Your code', text: 'Code: 123456' });

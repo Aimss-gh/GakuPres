@@ -32,8 +32,9 @@ const getTransport = () => {
 };
 
 // "GakuPres <gakupres@gmail.com>" -> { name: "GakuPres", email: "gakupres@gmail.com" }
+// (quotes around the whole value are removed: hosts like Render keep them, unlike a .env file)
 function sender() {
-  const from = (process.env.MAIL_FROM || process.env.SMTP_USER || '').trim();
+  const from = (process.env.MAIL_FROM || process.env.SMTP_USER || '').trim().replace(/^(["'])(.*)\1$/, '$2').trim();
   const m = /^(.*)<([^>]+)>$/.exec(from);
   return m ? { name: m[1].trim().replace(/^"|"$/g, '') || 'GakuPres', email: m[2].trim() } : { name: 'GakuPres', email: from };
 }
