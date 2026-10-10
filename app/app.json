@@ -50,7 +50,8 @@
           "backgroundColor": "#fff8ec"
         }
       ],
-      "expo-secure-store"
+      "expo-secure-store",
+      "./plugins/withPhoneArchs"
     ],
     "extra": {
       "eas": {
