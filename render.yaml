@@ -6,7 +6,7 @@ services:
     runtime: node
     rootDir: backend         # the server is in the backend/ folder of the repo
     region: singapore        # closest to the Philippines
-    plan: starter            # "free" also works, but it sleeps after 15 min idle and the first scan then waits ~1 min
+    plan: free               # sleeps after 15 min without use (keep it awake with a free ping, see backend/DEPLOY.md)
     buildCommand: npm ci --omit=dev
     startCommand: npm start
     healthCheckPath: /health
@@ -21,13 +21,10 @@ services:
         sync: false
       - key: JWT_SECRET
         sync: false
-      - key: SMTP_HOST
-        value: smtp.gmail.com
-      - key: SMTP_PORT
-        value: "465"
-      - key: SMTP_USER
-        sync: false
-      - key: SMTP_PASS
+      # email (sign-up codes, password resets, feedback) goes through Brevo: the free plan blocks Gmail's SMTP ports
+      - key: BREVO_API_KEY
         sync: false
       - key: MAIL_FROM
-        sync: false
+        sync: false          # e.g. GakuPres <gakupres@gmail.com>  (verified as a sender in Brevo)
+      - key: FEEDBACK_TO
+        sync: false          # where feedback goes, e.g. gakupres@gmail.com
