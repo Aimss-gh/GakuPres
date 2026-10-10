@@ -53,7 +53,8 @@ by authorized teachers, as part of the school's normal function of keeping class
 - **Service providers** that run the system for us, under agreements to protect the data:
   - Server hosting: Render (render.com), Singapore
   - Database: MongoDB Atlas on Google Cloud, Singapore
-  - Email (verification and password reset codes, feedback): Gmail (Google)
+  - Email delivery (verification and password reset codes, feedback): Brevo (brevo.com, France / EU)
+  - Team inbox that receives feedback: Gmail (Google)
 - We **never sell** personal data or share it for advertising.
 - We disclose data to authorities only when required by law.
 
