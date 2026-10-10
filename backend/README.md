@@ -25,7 +25,8 @@ Then open `.env` and fill in your values:
 - **JWT_SECRET** — 32+ random characters. Make one with `node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"`
 - **PORT** — leave as 5000
 - **LATE_AFTER_MINUTES** — minutes after class start that still count as Present (default 15)
-- **SMTP_HOST / SMTP_PORT / SMTP_USER / SMTP_PASS / MAIL_FROM** — the email account that sends "forgot password" codes and receives feedback (see the notes in .env.example). Empty = emails are printed in the terminal (testing only)
+- **BREVO_API_KEY** + **MAIL_FROM** — email through Brevo (free, 300/day), needed on Render's free plan, which blocks Gmail's ports (see `DEPLOY.md`)
+- **or SMTP_HOST / SMTP_PORT / SMTP_USER / SMTP_PASS / MAIL_FROM** — Gmail directly (your own computer, paid hosts). Sends sign-up codes, "forgot password" codes and feedback. Neither set = emails are printed in the terminal (testing only)
 - **FEEDBACK_TO** (optional) — where feedback from the app is emailed. Empty = `SMTP_USER`
 - **TRUST_PROXY** — only if the server runs behind a proxy/host like Render or nginx: set to `1` so login rate limits see real IPs
 
@@ -180,7 +181,7 @@ current time. Present / Late is then counted from it; the class's end time never
 backend/
 ├── lib/
 │   ├── attendance.js     shared logic: ownership, rosters, Present/Late, scan, proxy warning, history, import
-│   ├── mail.js           sends emails: reset codes, feedback (SMTP settings in .env)
+│   ├── mail.js           sends emails: sign-up and reset codes, feedback (Brevo or Gmail, set in .env)
 │   └── log.js            timestamped log lines
 ├── models/
 │   ├── User.js
