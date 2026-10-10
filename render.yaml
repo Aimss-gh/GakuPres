@@ -1,0 +1,33 @@
+# Render "Blueprint" (this file sits at the top of the repo): Render reads it and sets up the server (see backend/DEPLOY.md).
+# Values marked sync: false are secrets - Render asks you to type them in; they never go in git.
+services:
+  - type: web
+    name: gakupres-backend
+    runtime: node
+    rootDir: backend         # the server is in the backend/ folder of the repo
+    region: singapore        # closest to the Philippines
+    plan: starter            # "free" also works, but it sleeps after 15 min idle and the first scan then waits ~1 min
+    buildCommand: npm ci --omit=dev
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: TRUST_PROXY
+        value: "1"
+      - key: LATE_AFTER_MINUTES
+        value: "15"
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: SMTP_HOST
+        value: smtp.gmail.com
+      - key: SMTP_PORT
+        value: "465"
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: MAIL_FROM
+        sync: false
