@@ -28,7 +28,7 @@ const ok = (name, cond, extra) => { assert.ok(cond, name + ' ' + JSON.stringify(
     cwd: dir,
     env: { ...process.env, MONGO_URI: mongo.getUri() + 'gp', JWT_SECRET: 'test-secret-that-is-long-enough-1234567890', PORT: String(PORT), LOG_REQUESTS: '0',
       // never send real email from tests, even when .env has Gmail set up (empty values win over .env)
-      SMTP_HOST: '', SMTP_USER: '', SMTP_PASS: '', NODE_ENV: 'test' },
+      SMTP_HOST: '', SMTP_USER: '', SMTP_PASS: '', BREVO_API_KEY: '', NODE_ENV: 'test' },
   });
   let log = '';
   srv.stdout.on('data', (d) => (log += d));
@@ -494,6 +494,26 @@ const ok = (name, cond, extra) => { assert.ok(cond, name + ' ' + JSON.stringify(
     ok('everything of the account is gone', Object.values(left).every((v) => v === 0), left);
     r = await req('POST', '/auth/login', { email: 'del@mail.com', password: 'password4' });
     ok('cannot log in after delete', r.status === 400, r);
+
+    // ---- Brevo email (Render's free plan): checked against a fake Brevo on this computer, nothing is sent ----
+    {
+      const http = require('http');
+      let got = null;
+      const fake = http.createServer((q, s2) => {
+        let b = '';
+        q.on('data', (c) => (b += c));
+        q.on('end', () => { got = { key: q.headers['api-key'], body: JSON.parse(b) }; s2.writeHead(201, { 'content-type': 'application/json' }); s2.end('{"messageId":"x"}'); });
+      }).listen(0);
+      await new Promise((r) => fake.once('listening', r));
+      Object.assign(process.env, { BREVO_API_KEY: 'test-key', BREVO_API_URL: `http://127.0.0.1:${fake.address().port}`, MAIL_FROM: 'GakuPres <team@example.com>', NODE_ENV: 'production' });
+      delete require.cache[require.resolve('../lib/mail')];
+      const { sendMail } = require('../lib/mail');
+      const sent = await sendMail({ to: 'teacher@example.com', subject: 'Your code', text: 'Code: 123456' });
+      ok('Brevo: email sent through its web API', sent === true && got.key === 'test-key' && got.body.sender.email === 'team@example.com'
+        && got.body.sender.name === 'GakuPres' && got.body.to[0].email === 'teacher@example.com' && got.body.textContent === 'Code: 123456', got);
+      fake.close();
+      for (const k of ['BREVO_API_KEY', 'BREVO_API_URL', 'MAIL_FROM', 'NODE_ENV']) delete process.env[k];
+    }
 
     // ---- login rate limit (last: it blocks this IP) ----
     let last;
